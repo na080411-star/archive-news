@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive - 세계 뉴스 아카이브</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: #ffd700;
+        }
+        
+        .logo h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        /* Main Content */
+        .main {
+            padding: 3rem 0;
+        }
+        
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 50px;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #6c757d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tab-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2);
+        }
+        
+        .tab-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .tab-btn i {
+            font-size: 1.1rem;
+        }
+        
+        /* News Container */
+        .news-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            margin-bottom: 3rem;
+        }
+        
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        /* News List */
+        .news-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .news-item {
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .news-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .news-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .news-summary {
+            color: #6c757d;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #adb5bd;
+        }
+        
+        .news-source {
+            background: #f8f9fa;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .news-date {
+            color: #adb5bd;
+        }
+        
+        .news-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .news-link:hover .news-title {
+            color: #667eea;
+        }
+        
+        /* No News State */
+        .no-news {
+            text-align: center;
+            padding: 3rem 0;
+            color: #6c757d;
+        }
+        
+        .no-news i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        /* News Sources */
+        .news-sources {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+        
+        .news-sources h3 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .sources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .source-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            color: #495057;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .source-item:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer p {
+            opacity: 0.8;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header {
+                padding: 1.5rem 0;
+            }
+            
+            .logo h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .main {
+                padding: 2rem 0;
+            }
+            
+            .category-tabs {
+                gap: 0.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .tab-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .news-container {
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .news-item {
+                padding: 1rem;
+            }
+            
+            .news-title {
+                font-size: 1.1rem;
+            }
+            
+            .sources-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 0.8rem;
+            }
+            
+            .source-item {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo h1 {
+                font-size: 2rem;
+            }
+            
+            .logo i {
+                font-size: 2rem;
+            }
+            
+            .category-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .news-container {
+                padding: 1rem;
+            }
+            
+            .sources-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Animation for news items */
+        .news-item {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Smooth transitions */
+        * {
+            transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        /* Icon styles */
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            vertical-align: middle;
+            fill: currentColor;
+        }
+        
+        .icon-archive {
+            background: #ffd700;
+            border-radius: 50%;
+            padding: 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .icon-landmark::before { content: "🏛️"; }
+        .icon-chart::before { content: "📈"; }
+        .icon-sports::before { content: "⚽"; }
+        .icon-newspaper::before { content: "📰"; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <div class="icon icon-archive">📚</div>
+                <h1>Archive</h1>
+            </div>
+            <p class="subtitle">세계 주요 뉴스사의 실시간 뉴스 아카이브</p>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="category-tabs">
+                <button class="tab-btn active" data-category="politics">
+                    <span class="icon icon-landmark"></span>
+                    정치
+                </button>
+                <button class="tab-btn" data-category="economy">
+                    <span class="icon icon-chart"></span>
+                    경제
+                </button>
+                <button class="tab-btn" data-category="sports">
+                    <span class="icon icon-sports"></span>
+                    스포츠
+                </button>
+            </div>
+
+            <div class="news-container">
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>뉴스를 불러오는 중...</p>
+                </div>
+                
+                <div class="news-list" id="newsList">
+                    <!-- 뉴스 아이템들이 여기에 동적으로 추가됩니다 -->
+                </div>
+
+                <div class="no-news" id="noNews" style="display: none;">
+                    <span class="icon icon-newspaper"></span>
+                    <p>해당 카테고리의 뉴스가 없습니다.</p>
+                </div>
+            </div>
+
+            <div class="news-sources">
+                <h3>📰 뉴스 소스</h3>
+                <div class="sources-grid">
+                    <div class="source-item">로이터</div>
+                    <div class="source-item">AP</div>
+                    <div class="source-item">BBC</div>
+                    <div class="source-item">뉴욕 타임스</div>
+                    <div class="source-item">월스트리트 저널</div>
+                    <div class="source-item">블룸버그</div>
+                    <div class="source-item">AFP</div>
+                    <div class="source-item">교도통신</div>
+                    <div class="source-item">신화통신</div>
+                    <div class="source-item">가디언</div>
+                    <div class="source-item">르몽드</div>
+                    <div class="source-item">알자지라</div>
+                    <div class="source-item">이타르타스</div>
+                    <div class="source-item">인디펜던트</div>
+                    <div class="source-item">폭스 뉴스</div>
+                    <div class="source-item">CNN</div>
+                    <div class="source-item">포브스</div>
+                    <div class="source-item">더 이코노미스트</div>
+                    <div class="source-item">파이낸셜 타임즈</div>
+                    <div class="source-item">더 타임즈</div>
+                    <div class="source-item">블룸버그 통신</div>
+                    <div class="source-item">워싱턴 포스트</div>
+                    <div class="source-item">르피가로</div>
+                    <div class="source-item">스푸트니크 통신</div>
+                    <div class="source-item">NHK 뉴스</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Archive. 세계 뉴스 아카이브</p>
+        </div>
+    </footer>
+
+    <script>
+        // Archive 웹사이트 JavaScript
+        class NewsArchive {
+            constructor() {
+                this.currentCategory = 'politics';
+                this.newsData = [];
+                this.filteredNews = [];
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.loadNews();
+                this.setupAutoRefresh();
+            }
+
+            setupEventListeners() {
+                // 카테고리 탭 이벤트 리스너
+                const tabButtons = document.querySelectorAll('.tab-btn');
+                tabButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.switchCategory(e.target.closest('.tab-btn').dataset.category);
+                    });
+                });
+
+                // 클릭 이벤트 위임 (뉴스 아이템 클릭)
+                document.getElementById('newsList').addEventListener('click', (e) => {
+                    const newsItem = e.target.closest('.news-item');
+                    if (newsItem) {
+                        const link = newsItem.querySelector('a').href;
+                        window.open(link, '_blank');
+                    }
+                });
+            }
+
+            switchCategory(category) {
+                // 이전 활성 탭 비활성화
+                document.querySelector('.tab-btn.active').classList.remove('active');
+                
+                // 새 탭 활성화
+                document.querySelector(`[data-category="${category}"]`).classList.add('active');
+                
+                this.currentCategory = category;
+                this.filterAndDisplayNews();
+            }
+
+            async loadNews() {
+                try {
+                    // 로딩 상태 표시
+                    this.showLoading(true);
+                    
+                    // 실제 RSS 피드 대신 샘플 데이터 사용 (CORS 이슈로 인해)
+                    // 실제 운영 시에는 서버 사이드에서 RSS 피드를 가져와야 합니다
+                    await this.fetchSampleNews();
+                    
+                    this.showLoading(false);
+                    this.filterAndDisplayNews();
+                } catch (error) {
+                    console.error('뉴스 로딩 오류:', error);
+                    this.showLoading(false);
+                    this.showError('뉴스를 불러오는 중 오류가 발생했습니다.');
+                }
+            }
+
+            async fetchSampleNews() {
+                // 실제 RSS 피드 대신 샘플 뉴스 데이터 생성
+                // 이는 데모 목적이며, 실제 운영 시에는 서버에서 RSS 피드를 파싱해야 합니다
+                const sampleNews = [
+                    {
+                        title: "미국 대선 후보자 토론회, 주요 이슈 논의",
+                        summary: "정치적 이슈와 정책 방향에 대한 치열한 논의가 이어졌습니다.",
+                        source: "CNN",
+                        date: "2024-01-15",
+                        category: "politics",
+                        url: "https://example.com/news1"
+                    },
+                    {
+                        title: "유럽연합, 새로운 경제 정책 발표",
+                        summary: "EU 회원국들의 경제 회복을 위한 포괄적인 정책 패키지를 발표했습니다.",
+                        source: "로이터",
+                        date: "2024-01-15",
+                        category: "economy",
+                        url: "https://example.com/news2"
+                    },
+                    {
+                        title: "월드컵 예선, 아시아 지역 경기 결과",
+                        summary: "아시아 지역 예선에서 예상 밖의 결과들이 나오며 팬들을 놀라게 했습니다.",
+                        source: "BBC",
+                        date: "2024-01-15",
+                        category: "sports",
+                        url: "https://example.com/news3"
+                    },
+                    {
+                        title: "한국 정부, 부동산 정책 개편 발표",
+                        summary: "주택 시장 안정화를 위한 새로운 정책 방향을 제시했습니다.",
+                        source: "교도통신",
+                        date: "2024-01-15",
+                        category: "politics",
+                        url: "https://example.com/news4"
+                    },
+                    {
+                        title: "글로벌 주식시장, 기술주 중심으로 상승",
+                        summary: "AI 기술 발전에 대한 기대감으로 기술주들이 강세를 보이고 있습니다.",
+                        source: "블룸버그",
+                        date: "2024-01-15",
+                        category: "economy",
+                        url: "https://example.com/news5"
+                    },
+                    {
+                        title: "올림픽 준비, 도쿄 2024 대회 준비 현황",
+                        summary: "2024 도쿄 올림픽을 위한 준비 작업이 순조롭게 진행되고 있습니다.",
+                        source: "NHK 뉴스",
+                        date: "2024-01-15",
+                        category: "sports",
+                        url: "https://example.com/news6"
+                    },
+                    {
+                        title: "국제 외교, 주요국 정상회담 개최",
+                        summary: "글로벌 이슈 해결을 위한 다자간 협의가 진행되었습니다.",
+                        source: "뉴욕 타임스",
+                        date: "2024-01-15",
+                        category: "politics",
+                        url: "https://example.com/news7"
+                    },
+                    {
+                        title: "중국 경제, 새로운 성장 전략 발표",
+                        summary: "디지털 경제와 녹색 성장에 중점을 둔 새로운 경제 정책을 발표했습니다.",
+                        source: "신화통신",
+                        date: "2024-01-15",
+                        category: "economy",
+                        url: "https://example.com/news8"
+                    },
+                    {
+                        title: "프리미어리그, 시즌 중반 리그 순위 변화",
+                        summary: "예상 밖의 팀들이 상위권을 차지하며 리그의 흥미를 더하고 있습니다.",
+                        source: "더 타임즈",
+                        date: "2024-01-15",
+                        category: "sports",
+                        url: "https://example.com/news9"
+                    },
+                    {
+                        title: "러시아-우크라이나 분쟁, 평화 협상 진전",
+                        summary: "국제 사회의 중재로 평화 협상이 새로운 단계에 진입했습니다.",
+                        source: "이타르타스",
+                        date: "2024-01-15",
+                        category: "politics",
+                        url: "https://example.com/news10"
+                    },
+                    {
+                        title: "일본 은행, 통화 정책 방향성 발표",
+                        summary: "경제 회복과 물가 안정을 위한 새로운 통화 정책 방향을 제시했습니다.",
+                        source: "교도통신",
+                        date: "2024-01-15",
+                        category: "economy",
+                        url: "https://example.com/news11"
+                    },
+                    {
+                        title: "NBA 올스타전, 팬들의 뜨거운 관심",
+                        summary: "2024 NBA 올스타전에 대한 팬들의 기대감이 높아지고 있습니다.",
+                        source: "ESPN",
+                        date: "2024-01-15",
+                        category: "sports",
+                        url: "https://example.com/news12"
+                    }
+                ];
+
+                // 실제 RSS 피드에서 가져온 것처럼 약간의 지연 추가
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                this.newsData = sampleNews;
+            }
+
+            filterAndDisplayNews() {
+                // 현재 카테고리에 맞는 뉴스만 필터링
+                this.filteredNews = this.newsData.filter(news => 
+                    news.category === this.currentCategory
+                );
+
+                this.displayNews();
+            }
+
+            displayNews() {
+                const newsList = document.getElementById('newsList');
+                const noNews = document.getElementById('noNews');
+
+                if (this.filteredNews.length === 0) {
+                    newsList.style.display = 'none';
+                    noNews.style.display = 'block';
+                    return;
+                }
+
+                newsList.style.display = 'grid';
+                noNews.style.display = 'none';
+
+                // 뉴스 아이템들을 HTML로 렌더링
+                newsList.innerHTML = this.filteredNews.map(news => `
+                    <div class="news-item">
+                        <a href="${news.url}" class="news-link" target="_blank">
+                            <h3 class="news-title">${news.title}</h3>
+                            <p class="news-summary">${news.summary}</p>
+                            <div class="news-meta">
+                                <span class="news-source">${news.source}</span>
+                                <span class="news-date">${this.formatDate(news.date)}</span>
+                            </div>
+                        </a>
+                    </div>
+                `).join('');
+            }
+
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
+
+            showLoading(show) {
+                const loading = document.getElementById('loading');
+                const newsList = document.getElementById('newsList');
+                const noNews = document.getElementById('noNews');
+
+                if (show) {
+                    loading.style.display = 'block';
+                    newsList.style.display = 'none';
+                    noNews.style.display = 'none';
+                } else {
+                    loading.style.display = 'none';
+                }
+            }
+
+            showError(message) {
+                const newsList = document.getElementById('newsList');
+                newsList.innerHTML = `
+                    <div class="error-message">
+                        <span class="icon icon-newspaper">⚠️</span>
+                        <p>${message}</p>
+                        <button onclick="location.reload()">다시 시도</button>
+                    </div>
+                `;
+            }
+
+            setupAutoRefresh() {
+                // 5분마다 뉴스 자동 새로고침
+                setInterval(() => {
+                    this.loadNews();
+                }, 5 * 60 * 1000);
+            }
+        }
+
+        // 페이지 로드 시 NewsArchive 인스턴스 생성
+        document.addEventListener('DOMContentLoaded', () => {
+            new NewsArchive();
+        });
+
+        // 에러 처리
+        window.addEventListener('error', (e) => {
+            console.error('JavaScript 오류:', e.error);
+        });
+
+        // 네트워크 상태 모니터링
+        window.addEventListener('online', () => {
+            console.log('네트워크 연결됨');
+        });
+
+        window.addEventListener('offline', () => {
+            console.log('네트워크 연결 끊김');
+        });
+    </script>
+</body>
+</html>

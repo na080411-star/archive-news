@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive 테스트 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .news-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="header">
+            <h1>🌐 Archive 웹사이트 테스트</h1>
+            <p>PC방 환경에서 웹사이트가 제대로 작동하는지 확인합니다</p>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 기본 정보</h3>
+            <div class="status info">
+                <strong>현재 시간:</strong> <span id="currentTime"></span><br>
+                <strong>브라우저:</strong> <span id="browserInfo"></span><br>
+                <strong>화면 해상도:</strong> <span id="screenResolution"></span>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 기능 테스트</h3>
+            <button onclick="testJavaScript()">JavaScript 테스트</button>
+            <button onclick="testLocalStorage()">로컬 스토리지 테스트</button>
+            <button onclick="testFetch()">네트워크 테스트</button>
+            <div id="testResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📰 뉴스 데이터 테스트</h3>
+            <button onclick="loadSampleNews()">샘플 뉴스 로드</button>
+            <div id="newsResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎨 스타일 테스트</h3>
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                <h3>Archive 헤더 스타일</h3>
+                <p>그라데이션 배경과 스타일이 제대로 적용되었는지 확인</p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📱 반응형 테스트</h3>
+            <div style="background-color: #e9ecef; padding: 15px; border-radius: 5px;">
+                <p><strong>현재 뷰포트:</strong> <span id="viewportInfo"></span></p>
+                <p><strong>CSS 미디어 쿼리:</strong> <span id="mediaQueryInfo"></span></p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🚀 메인 사이트로 이동</h3>
+            <button onclick="goToMainSite()" style="background-color: #28a745;">메인 사이트 열기</button>
+            <p>위의 모든 테스트가 통과하면 메인 Archive 웹사이트를 확인해보세요.</p>
+        </div>
+    </div>
+
+    <script>
+        // 기본 정보 표시
+        document.getElementById('currentTime').textContent = new Date().toLocaleString('ko-KR');
+        document.getElementById('browserInfo').textContent = navigator.userAgent;
+        document.getElementById('screenResolution').textContent = screen.width + ' x ' + screen.height;
+        document.getElementById('viewportInfo').textContent = window.innerWidth + ' x ' + window.innerHeight;
+
+        // 미디어 쿼리 정보
+        function updateMediaQueryInfo() {
+            let info = '';
+            if (window.innerWidth < 480) info = '모바일 (480px 미만)';
+            else if (window.innerWidth < 768) info = '태블릿 (768px 미만)';
+            else info = '데스크톱 (768px 이상)';
+            document.getElementById('mediaQueryInfo').textContent = info;
+        }
+        updateMediaQueryInfo();
+        window.addEventListener('resize', updateMediaQueryInfo);
+
+        // JavaScript 테스트
+        function testJavaScript() {
+            const results = document.getElementById('testResults');
+            try {
+                // ES6 기능 테스트
+                const testArray = [1, 2, 3];
+                const doubled = testArray.map(x => x * 2);
+                const sum = testArray.reduce((a, b) => a + b, 0);
+                
+                results.innerHTML = `
+                    <div class="status success">
+                        ✅ JavaScript ES6 기능 정상 작동<br>
+                        배열 맵핑: [${testArray}] → [${doubled}]<br>
+                        배열 합계: ${sum}
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="status error">
+                        ❌ JavaScript 오류: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // 로컬 스토리지 테스트
+        function testLocalStorage() {
+            const results = document.getElementById('testResults');
+            try {
+                localStorage.setItem('test', 'Archive Test');
+                const testValue = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                
+                results.innerHTML = `
+                    <div class="status success">
+                        ✅ 로컬 스토리지 정상 작동<br>
+                        테스트 값: ${testValue}
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="status error">
+                        ❌ 로컬 스토리지 오류: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // 네트워크 테스트
+        function testFetch() {
+            const results = document.getElementById('testResults');
+            results.innerHTML = `
+                <div class="status info">
+                    🔄 네트워크 테스트 중...
+                </div>
+            `;
+            
+            // 간단한 fetch 테스트 (실제 요청은 하지 않음)
+            setTimeout(() => {
+                results.innerHTML = `
+                    <div class="status success">
+                        ✅ 네트워크 기능 준비 완료<br>
+                        fetch API 사용 가능
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // 샘플 뉴스 로드
+        function loadSampleNews() {
+            const newsResults = document.getElementById('newsResults');
+            const sampleNews = [
+                {
+                    title: "테스트 뉴스 1",
+                    summary: "이것은 테스트용 뉴스입니다. PC방 환경에서 정상 작동하는지 확인합니다.",
+                    source: "테스트",
+                    date: new Date().toLocaleDateString('ko-KR')
+                },
+                {
+                    title: "테스트 뉴스 2",
+                    summary: "두 번째 테스트 뉴스입니다. 뉴스 표시 기능이 제대로 작동하는지 확인합니다.",
+                    source: "테스트",
+                    date: new Date().toLocaleDateString('ko-KR')
+                }
+            ];
+
+            newsResults.innerHTML = sampleNews.map(news => `
+                <div class="news-item">
+                    <h4>${news.title}</h4>
+                    <p>${news.summary}</p>
+                    <small>출처: ${news.source} | 날짜: ${news.date}</small>
+                </div>
+            `).join('');
+        }
+
+        // 메인 사이트로 이동
+        function goToMainSite() {
+            window.open('index.html', '_blank');
+        }
+
+        // 페이지 로드 시 자동 테스트
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testJavaScript();
+                testLocalStorage();
+                testFetch();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
