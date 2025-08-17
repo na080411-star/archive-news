@@ -294,17 +294,4 @@ window.addEventListener('offline', () => {
     showFallbackMessage('네트워크 연결이 끊어졌습니다. 연결을 확인해 주세요.');
 });
 
-// CSS/JS 파일 로딩 상태 확인
-window.addEventListener('load', () => {
-    // CSS 로딩 확인
-    const styles = getComputedStyle(document.body);
-    if (styles.fontFamily === 'Arial, sans-serif') {
-        console.warn('CSS 파일이 제대로 로드되지 않았습니다. 폴백 스타일을 사용합니다.');
-    }
-    
-    // JavaScript 로딩 확인
-    if (typeof NewsArchive === 'undefined') {
-        console.error('JavaScript 파일이 제대로 로드되지 않았습니다.');
-        showFallbackMessage('JavaScript 파일을 불러올 수 없습니다.');
-    }
-});
+
